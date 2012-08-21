@@ -1,7 +1,7 @@
 #sbs-git:slp/pkgs/t/tel-plugin-vconf
 Name:       tel-plugin-vconf
 Summary:    Telephony Vconf storage plugin
-Version: 0.1.7
+Version: 0.1.13
 Release:    1
 Group:      System/Libraries
 License:    Apache
@@ -29,15 +29,16 @@ make %{?jobs:-j%jobs}
 /sbin/ldconfig
 
 #Default Call Statistics
-vconftool set -t int db/dnet/statistics/cellular/totalsnt "0"
-vconftool set -t int db/dnet/statistics/cellular/totalrcv "0"
-vconftool set -t int db/dnet/statistics/cellular/lastsnt "0"
-vconftool set -t int db/dnet/statistics/cellular/lastrcv "0"
+vconftool set -t int db/dnet/statistics/cellular/totalsnt 0 -i -f
+vconftool set -t int db/dnet/statistics/cellular/totalrcv 0 -i -f
+vconftool set -t int db/dnet/statistics/cellular/lastsnt 0 -i -f
+vconftool set -t int db/dnet/statistics/cellular/lastrcv 0 -i -f
 
 ##setting vconf key##
 vconftool set -t int memory/dnet/state 0 -i
 vconftool set -t int memory/dnet/cellular 4 -i
 vconftool set -t int memory/telephony/svc_type 0 -i -f
+vconftool set -t int memory/telephony/ps_type 0 -i -f
 vconftool set -t int memory/telephony/rssi 0 -i -f
 vconftool set -t int memory/telephony/sim_slot 0 -i -f
 vconftool set -t int memory/telephony/svc_roam 0 -i -f
@@ -59,7 +60,6 @@ vconftool set -t int memory/telephony/sat_idle 0 -i -f
 vconftool set -t int memory/telephony/sat_state 0 -i -f
 vconftool set -t int memory/telephony/zuhause_zone 0 -i -f
 vconftool set -t int memory/telephony/low_battery 0 -i -f
-vconftool set -t int memory/telephony/bIMSIFactoryProcess 0 -i -f
 vconftool set -t string memory/telephony/idle_text "" -i -f
 vconftool set -t string memory/telephony/spn "" -i -f
 vconftool set -t string memory/telephony/nw_name "" -i -f
@@ -69,7 +69,8 @@ vconftool set -t string memory/telephony/szSubscriberAlpha "" -i -f
 vconftool set -t string memory/telephony/szSWVersion "" -i -f
 vconftool set -t string memory/telephony/szHWVersion "" -i -f
 vconftool set -t string memory/telephony/szCalDate "" -i -f
-vconftool set -t string db/telephony/imsi "" -f
+vconftool set -t string memory/telephony/productCode "" -i -f
+vconftool set -t string db/private/tel-plugin-vconf/imsi "" -f
 vconftool set -t int db/telephony/emergency 0 -i -f
 
 %postun -p /sbin/ldconfig

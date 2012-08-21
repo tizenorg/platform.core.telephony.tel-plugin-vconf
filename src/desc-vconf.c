@@ -34,6 +34,8 @@
 #include <storage.h>
 #include <co_network.h>
 
+static void reset_vconf();
+
 static TcoreStorageDispatchCallback callback_dispatch;
 
 static const gchar* convert_strgkey_to_vconf(enum tcore_storage_key key)
@@ -122,7 +124,7 @@ static const gchar* convert_strgkey_to_vconf(enum tcore_storage_key key)
 		case STORAGE_KEY_TELEPHONY_FACTORY_KSTRINGB:
 			return VCONFKEY_TELEPHONY_FACTORY_KSTRINGB;
 		case STORAGE_KEY_TELEPHONY_IMSI:
-			return "db/telephony/imsi";
+			return "db/private/tel-plugin-vconf/imsi";
 		case STORAGE_KEY_CELLULAR_STATE:
 			return VCONFKEY_NETWORK_CELLULAR_STATE;
 		case STORAGE_KEY_CELLULAR_PKT_TOTAL_RCV:
@@ -265,7 +267,7 @@ static enum tcore_storage_key convert_vconf_to_strgkey(const gchar* key)
 	else if (g_str_equal(key, VCONFKEY_TELEPHONY_FACTORY_KSTRINGB) == TRUE) {
 		return STORAGE_KEY_TELEPHONY_FACTORY_KSTRINGB;
 	}
-	else if (g_str_equal(key, "db/telephony/imsi") == TRUE) {
+	else if (g_str_equal(key, "db/private/tel-plugin-vconf/imsi") == TRUE) {
 		return STORAGE_KEY_TELEPHONY_IMSI;
 	}
 	else if (g_str_equal(key, VCONFKEY_NETWORK_CELLULAR_STATE) == TRUE) {
@@ -714,32 +716,39 @@ static enum tcore_hook_return on_hook_pb_init(Server *s, CoreObject *source, enu
 	return TCORE_HOOK_RETURN_CONTINUE;
 }
 
-static enum tcore_hook_return on_hook_ps_protocol_status(Server *s, CoreObject *source, enum tcore_notification_command command, unsigned int data_len, void *data, void *user_data)
+static enum tcore_hook_return on_hook_ps_protocol_status(Server *s, CoreObject *source,
+		enum tcore_notification_command command, unsigned int data_len, void *data, void *user_data)
 {
-	TcorePlugin *p = NULL;
+/*	TcorePlugin *p = NULL;
 	GSList *co_list = NULL;
-	CoreObject *co_network = NULL;
-	const struct tnoti_ps_protocol_status *noti = data;
+	CoreObject *co_network = NULL;*/
 	enum telephony_network_service_type svc_type;
+	const struct tnoti_ps_protocol_status *noti = data;
+
 	dbg("vconf set")
 
 	vconf_get_int(VCONFKEY_TELEPHONY_SVCTYPE, (int *)&svc_type);
-	if((int)svc_type < (int)VCONFKEY_TELEPHONY_SVCTYPE_2G){
+	if(svc_type < (enum telephony_network_service_type)VCONFKEY_TELEPHONY_SVCTYPE_2G){
 		dbg("service state is not available");
 		return TCORE_HOOK_RETURN_CONTINUE;
 	}
 
-	if(noti->status == TELEPHONY_HSDPA_ON)
-		vconf_set_int(VCONFKEY_TELEPHONY_SVCTYPE, VCONFKEY_TELEPHONY_SVCTYPE_HSDPA);
-	else{
-		p = tcore_object_ref_plugin(source);
-		co_list = tcore_plugin_get_core_objects_bytype(p, CORE_OBJECT_TYPE_NETWORK);
-		co_network = co_list->data;
-		if(!co_network)
-			dbg("network co does not exist");
-		tcore_network_get_service_type(co_network, &svc_type);
-		vconf_set_int(VCONFKEY_TELEPHONY_SVCTYPE, svc_type);
-		g_slist_free(co_list);
+	switch (noti->status) {
+		case TELEPHONY_HSDPA_OFF:
+			vconf_set_int(VCONFKEY_TELEPHONY_PSTYPE, VCONFKEY_TELEPHONY_PSTYPE_NONE);
+			break;
+
+		case TELEPHONY_HSDPA_ON:
+			vconf_set_int(VCONFKEY_TELEPHONY_PSTYPE, VCONFKEY_TELEPHONY_PSTYPE_HSDPA);
+			break;
+
+		case TELEPHONY_HSUPA_ON:
+			vconf_set_int(VCONFKEY_TELEPHONY_PSTYPE, VCONFKEY_TELEPHONY_PSTYPE_HSUPA);
+			break;
+
+		case TELEPHONY_HSPA_ON:
+			vconf_set_int(VCONFKEY_TELEPHONY_PSTYPE, VCONFKEY_TELEPHONY_PSTYPE_HSPA);
+			break;
 	}
 
 	return TCORE_HOOK_RETURN_CONTINUE;
@@ -753,8 +762,12 @@ static enum tcore_hook_return on_hook_modem_power(Server *s, CoreObject *source,
 	if (power->state == MODEM_STATE_ONLINE) {
 		dbg("tapi ready");
 		vconf_set_int(VCONFKEY_TELEPHONY_TAPI_STATE, VCONFKEY_TELEPHONY_TAPI_STATE_READY);
-	}
-	else {
+	} else if (power->state == MODEM_STATE_ERROR) {
+
+		dbg("cp crash : all network setting will be reset");
+		reset_vconf();
+
+	} else {
 		dbg("tapi none");
 		vconf_set_int(VCONFKEY_TELEPHONY_TAPI_STATE, VCONFKEY_TELEPHONY_TAPI_STATE_NONE);
 	}
