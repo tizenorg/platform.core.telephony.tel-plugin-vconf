@@ -499,6 +499,103 @@ struct storage_operations ops = {
 	.remove_key_callback = remove_key_callback,
 };
 
+static void _update_vconf_network_name(CoreObject *o, const char *plmn)
+{
+	struct tcore_network_operator_info *noi = NULL;
+	char *tmp;
+	enum telephony_network_service_type svc_type;
+	enum tcore_network_name_priority network_name_priority;
+	char mcc[4] = { 0, };
+	char mnc[4] = { 0, };
+	char *plmn_str = NULL;
+
+	if (plmn)
+		plmn_str = (char *)plmn;
+	else
+		plmn_str = tcore_network_get_plmn(o);
+
+	if (plmn_str) {
+		snprintf(mcc, 4, "%s", plmn_str);
+		snprintf(mnc, 4, "%s", plmn_str+3);
+
+		if (mnc[2] == '#')
+			mnc[2] = '\0';
+	}
+
+	if (!plmn)
+		free(plmn_str);
+
+	tcore_network_get_service_type(o, &svc_type);
+
+	tcore_network_get_network_name_priority(o, &network_name_priority);
+	switch (network_name_priority) {
+		case TCORE_NETWORK_NAME_PRIORITY_SPN:
+			vconf_set_int(VCONFKEY_TELEPHONY_SPN_DISP_CONDITION, VCONFKEY_TELEPHONY_DISP_SPN);
+			break;
+
+		case TCORE_NETWORK_NAME_PRIORITY_NETWORK:
+			vconf_set_int(VCONFKEY_TELEPHONY_SPN_DISP_CONDITION, VCONFKEY_TELEPHONY_DISP_PLMN);
+			break;
+
+		case TCORE_NETWORK_NAME_PRIORITY_ANY:
+			vconf_set_int(VCONFKEY_TELEPHONY_SPN_DISP_CONDITION, VCONFKEY_TELEPHONY_DISP_SPN_PLMN);
+			break;
+
+		default:
+			vconf_set_int(VCONFKEY_TELEPHONY_SPN_DISP_CONDITION, VCONFKEY_TELEPHONY_DISP_INVALID);
+			break;
+	}
+
+	switch (svc_type) {
+		case NETWORK_SERVICE_TYPE_2G:
+		case NETWORK_SERVICE_TYPE_2_5G:
+		case NETWORK_SERVICE_TYPE_2_5G_EDGE:
+		case NETWORK_SERVICE_TYPE_3G:
+		case NETWORK_SERVICE_TYPE_HSDPA:
+			/* spn */
+			tmp = tcore_network_get_network_name(o, TCORE_NETWORK_NAME_TYPE_SPN);
+			if (tmp) {
+				dbg("SPN[%s]", tmp);
+				vconf_set_str(VCONFKEY_TELEPHONY_SPN_NAME, tmp);
+				free(tmp);
+			}
+
+			/* nitz */
+			tmp = tcore_network_get_network_name(o, TCORE_NETWORK_NAME_TYPE_FULL);
+			if (tmp) {
+				dbg("NWNAME = NITZ_FULL[%s]", tmp);
+				vconf_set_str(VCONFKEY_TELEPHONY_NWNAME, tmp);
+				free(tmp);
+				break;
+			}
+			else {
+				tmp = tcore_network_get_network_name(o, TCORE_NETWORK_NAME_TYPE_SHORT);
+				if (tmp) {
+					dbg("NWNAME = NITZ_SHORT[%s]", tmp);
+					vconf_set_str(VCONFKEY_TELEPHONY_NWNAME, tmp);
+					free(tmp);
+					break;
+				}
+			}
+
+			/* pre-define table */
+			noi = tcore_network_operator_info_find(o, mcc, mnc);
+			if (noi) {
+				dbg("%s-%s: country=[%s], oper=[%s]", mcc, mnc, noi->country, noi->name);
+				dbg("NWNAME = pre-define table[%s]", noi->name);
+				vconf_set_str(VCONFKEY_TELEPHONY_NWNAME, noi->name);
+			}
+			else {
+				dbg("%s-%s: no network operator name", mcc, mnc);
+				vconf_set_str(VCONFKEY_TELEPHONY_NWNAME, plmn_str);
+			}
+			break;
+
+		default:
+			break;
+	}
+}
+
 static enum tcore_hook_return on_hook_network_location_cellinfo(Server *s, CoreObject *source, enum tcore_notification_command command, unsigned int data_len, void *data, void *user_data)
 {
 	const struct tnoti_network_location_cellinfo *info = data;
@@ -570,9 +667,9 @@ static enum tcore_hook_return on_hook_network_registration_status(Server *s, Cor
 			break;
 	}
 
-	vconf_get_int(VCONFKEY_TELEPHONY_SVC_ROAM, &current);
-	if (current != info->roaming_status)
-		vconf_set_int(VCONFKEY_TELEPHONY_SVC_ROAM, info->roaming_status);
+	vconf_set_int(VCONFKEY_TELEPHONY_SVC_ROAM, info->roaming_status);
+
+	_update_vconf_network_name(source, NULL);
 
 	return TCORE_HOOK_RETURN_CONTINUE;
 }
@@ -580,84 +677,13 @@ static enum tcore_hook_return on_hook_network_registration_status(Server *s, Cor
 static enum tcore_hook_return on_hook_network_change(Server *s, CoreObject *source, enum tcore_notification_command command, unsigned int data_len, void *data, void *user_data)
 {
 	const struct tnoti_network_change *info = data;
-	struct tcore_network_operator_info *noi = NULL;
-	char mcc[4] = { 0, };
-	char mnc[4] = { 0, };
-	enum telephony_network_service_type svc_type;
-	enum tcore_network_name_priority network_name_priority;
-	char *tmp;
 
 	dbg("vconf set");
 
 	vconf_set_int(VCONFKEY_TELEPHONY_PLMN, atoi(info->plmn));
 	vconf_set_int(VCONFKEY_TELEPHONY_LAC, info->gsm.lac);
 
-	// nw_name
-	snprintf(mcc, 4, "%s", info->plmn);
-	snprintf(mnc, 4, "%s", info->plmn+3);
-
-	if (mnc[2] == '#')
-		mnc[2] = '\0';
-
-	tcore_network_get_service_type(source, &svc_type);
-	tcore_network_get_network_name_priority(source, &network_name_priority);
-	switch (network_name_priority) {
-		case TCORE_NETWORK_NAME_PRIORITY_SPN:
-			vconf_set_int(VCONFKEY_TELEPHONY_SPN_DISP_CONDITION, VCONFKEY_TELEPHONY_DISP_SPN);
-			break;
-
-		case TCORE_NETWORK_NAME_PRIORITY_NETWORK:
-			vconf_set_int(VCONFKEY_TELEPHONY_SPN_DISP_CONDITION, VCONFKEY_TELEPHONY_DISP_PLMN);
-			break;
-
-		case TCORE_NETWORK_NAME_PRIORITY_ANY:
-			vconf_set_int(VCONFKEY_TELEPHONY_SPN_DISP_CONDITION, VCONFKEY_TELEPHONY_DISP_SPN_PLMN);
-			break;
-
-		default:
-			vconf_set_int(VCONFKEY_TELEPHONY_SPN_DISP_CONDITION, VCONFKEY_TELEPHONY_DISP_INVALID);
-			break;
-	}
-
-	switch (svc_type) {
-		case NETWORK_SERVICE_TYPE_2G:
-		case NETWORK_SERVICE_TYPE_2_5G:
-		case NETWORK_SERVICE_TYPE_2_5G_EDGE:
-		case NETWORK_SERVICE_TYPE_3G:
-		case NETWORK_SERVICE_TYPE_HSDPA:
-			/* spn */
-			tmp = tcore_network_get_network_name(source, TCORE_NETWORK_NAME_TYPE_SPN);
-			if (tmp) {
-				dbg("SPN[%s]", tmp);
-				vconf_set_str(VCONFKEY_TELEPHONY_SPN_NAME, tmp);
-				free(tmp);
-			}
-
-			/* nitz */
-			tmp = tcore_network_get_network_name(source, TCORE_NETWORK_NAME_TYPE_SHORT);
-			if (tmp) {
-				dbg("NWNAME = NITZ_SHORT[%s]", tmp);
-				vconf_set_str(VCONFKEY_TELEPHONY_NWNAME, tmp);
-				free(tmp);
-				break;
-			}
-
-			/* pre-define table */
-			noi = tcore_network_operator_info_find(source, mcc, mnc);
-			if (noi) {
-				dbg("%s-%s: country=[%s], oper=[%s]", mcc, mnc, noi->country, noi->name);
-				dbg("NWNAME = pre-define table[%s]", noi->name);
-				vconf_set_str(VCONFKEY_TELEPHONY_NWNAME, noi->name);
-			}
-			else {
-				dbg("%s-%s: no network operator name", mcc, mnc);
-				vconf_set_str(VCONFKEY_TELEPHONY_NWNAME, info->plmn);
-			}
-			break;
-
-		default:
-			break;
-	}
+	_update_vconf_network_name(source, info->plmn);
 
 	return TCORE_HOOK_RETURN_CONTINUE;
 }
@@ -719,9 +745,6 @@ static enum tcore_hook_return on_hook_pb_init(Server *s, CoreObject *source, enu
 static enum tcore_hook_return on_hook_ps_protocol_status(Server *s, CoreObject *source,
 		enum tcore_notification_command command, unsigned int data_len, void *data, void *user_data)
 {
-/*	TcorePlugin *p = NULL;
-	GSList *co_list = NULL;
-	CoreObject *co_network = NULL;*/
 	enum telephony_network_service_type svc_type;
 	const struct tnoti_ps_protocol_status *noti = data;
 
