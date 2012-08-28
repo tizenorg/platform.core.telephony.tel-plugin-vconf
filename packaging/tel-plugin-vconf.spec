@@ -1,7 +1,7 @@
 #sbs-git:slp/pkgs/t/tel-plugin-vconf
 Name:       tel-plugin-vconf
 Summary:    Telephony Vconf storage plugin
-Version: 0.1.14
+Version: 0.1.15
 Release:    1
 Group:      System/Libraries
 License:    Apache
@@ -72,6 +72,7 @@ vconftool set -t string memory/telephony/szCalDate "" -i -f
 vconftool set -t string memory/telephony/productCode "" -i -f
 vconftool set -t string db/private/tel-plugin-vconf/imsi "" -f
 vconftool set -t int db/telephony/emergency 0 -i -f
+vconftool set -t bool memory/telephony/telephony_ready 0 -i -f
 
 %postun -p /sbin/ldconfig
 

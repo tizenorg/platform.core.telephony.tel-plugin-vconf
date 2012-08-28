@@ -81,6 +81,8 @@ static const gchar* convert_strgkey_to_vconf(enum tcore_storage_key key)
 			return VCONFKEY_TELEPHONY_LOW_BATTERY;
 		case STORAGE_KEY_TELEPHONY_EVENT_SYSTEM_READY:
 			return "memory/telephony/event_system_ready";
+		case STORAGE_KEY_TELEPHONY_READY:
+			return VCONFKEY_TELEPHONY_READY;
 		case STORAGE_KEY_TELEPHONY_SIM_SLOT:
 			return VCONFKEY_TELEPHONY_SIM_SLOT;
 		case STORAGE_KEY_PM_STATE:
@@ -203,6 +205,9 @@ static enum tcore_storage_key convert_vconf_to_strgkey(const gchar* key)
 	}
 	else if (g_str_equal(key, "memory/telephony/event_system_ready") == TRUE) {
 		return STORAGE_KEY_TELEPHONY_EVENT_SYSTEM_READY;
+	}
+	else if (g_str_equal(key, VCONFKEY_TELEPHONY_READY) == TRUE) {
+		return STORAGE_KEY_TELEPHONY_READY;
 	}
 	else if (g_str_equal(key, VCONFKEY_3G_ENABLE) == TRUE) {
 		return STORAGE_KEY_3G_ENABLE;
@@ -827,6 +832,7 @@ static void reset_vconf()
 	vconf_set_str(VCONFKEY_TELEPHONY_SUBSCRIBER_NUMBER, "");
 	vconf_set_str(VCONFKEY_TELEPHONY_SUBSCRIBER_NAME, "");
 	vconf_set_int(VCONFKEY_TELEPHONY_SIM_PB_INIT,VCONFKEY_TELEPHONY_SIM_PB_INIT_NONE);
+	vconf_set_bool(VCONFKEY_TELEPHONY_READY, 0);
 }
 
 static gboolean on_load()
