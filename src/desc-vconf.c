@@ -805,7 +805,7 @@ static enum tcore_hook_return on_hook_modem_power(Server *s, CoreObject *source,
 
 static void reset_vconf()
 {
-	vconf_set_str(VCONFKEY_TELEPHONY_NWNAME, "no_network");
+	vconf_set_str(VCONFKEY_TELEPHONY_NWNAME, "");
 	vconf_set_int(VCONFKEY_TELEPHONY_PLMN, 0);
 	vconf_set_int(VCONFKEY_TELEPHONY_LAC, 0);
 	vconf_set_int(VCONFKEY_TELEPHONY_CELLID, 0);
@@ -822,7 +822,7 @@ static void reset_vconf()
 	vconf_set_int(VCONFKEY_TELEPHONY_CALL_FORWARD_STATE, VCONFKEY_TELEPHONY_CALL_FORWARD_OFF);
 	vconf_set_int(VCONFKEY_TELEPHONY_TAPI_STATE, VCONFKEY_TELEPHONY_TAPI_STATE_NONE);
 	vconf_set_int(VCONFKEY_TELEPHONY_SPN_DISP_CONDITION, VCONFKEY_TELEPHONY_DISP_INVALID);
-	vconf_set_str(VCONFKEY_TELEPHONY_SPN_NAME, "no_spn");
+	vconf_set_str(VCONFKEY_TELEPHONY_SPN_NAME, "");
 	vconf_set_int(VCONFKEY_TELEPHONY_SAT_STATE, VCONFKEY_TELEPHONY_SAT_NONE);
 	vconf_set_str(VCONFKEY_TELEPHONY_SAT_SETUP_IDLE_TEXT, "");
 	vconf_set_int(VCONFKEY_TELEPHONY_ZONE_ZUHAUSE, 0);
