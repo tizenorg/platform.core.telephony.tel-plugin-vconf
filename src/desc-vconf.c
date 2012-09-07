@@ -527,9 +527,6 @@ static void _update_vconf_network_name(CoreObject *o, const char *plmn)
 			mnc[2] = '\0';
 	}
 
-	if (!plmn)
-		free(plmn_str);
-
 	tcore_network_get_service_type(o, &svc_type);
 
 	tcore_network_get_network_name_priority(o, &network_name_priority);
@@ -599,6 +596,9 @@ static void _update_vconf_network_name(CoreObject *o, const char *plmn)
 		default:
 			break;
 	}
+
+	if (!plmn)
+		free(plmn_str);
 }
 
 static enum tcore_hook_return on_hook_network_location_cellinfo(Server *s, CoreObject *source, enum tcore_notification_command command, unsigned int data_len, void *data, void *user_data)

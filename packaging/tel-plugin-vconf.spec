@@ -1,7 +1,7 @@
 #sbs-git:slp/pkgs/t/tel-plugin-vconf
 Name:       tel-plugin-vconf
 Summary:    Telephony Vconf storage plugin
-Version: 0.1.17
+Version: 0.1.18
 Release:    1
 Group:      System/Libraries
 License:    Apache
