@@ -25,7 +25,7 @@ Telephony Vconf storage plugin
 
 %build
 versionint=$[%{major} * 1000000 + %{minor} * 1000 + %{patchlevel}]
-cmake . -DCMAKE_INSTALL_PREFIX=%{_prefix} -DVERSION=$versionint
+%cmake . -DVERSION=$versionint
 make %{?jobs:-j%jobs}
 
 %post
@@ -85,13 +85,11 @@ vconftool set -t bool db/telephony/flight_mode 0 -i -f
 %postun -p /sbin/ldconfig
 
 %install
-rm -rf %{buildroot}
 %make_install
 mkdir -p %{buildroot}/usr/share/license
 
 %files
 %manifest tel-plugin-vconf.manifest
 %defattr(-,root,root,-)
-#%doc COPYING
 %{_libdir}/telephony/plugins/vconf-plugin*
 /usr/share/license/tel-plugin-vconf
