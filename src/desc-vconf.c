@@ -814,17 +814,6 @@ static enum tcore_hook_return on_hook_ps_protocol_status(Server *s, CoreObject *
 	return TCORE_HOOK_RETURN_CONTINUE;
 }
 
-static enum tcore_hook_return on_hook_modem_flight_mode(Server *s, CoreObject *source, enum tcore_notification_command command, unsigned int data_len, void *data, void *user_data)
-{
-	const struct tnoti_modem_flight_mode *flight_mode = data;
-
-	dbg("vconf set (flight_mode = %d)", flight_mode->enable);
-
-	vconf_set_bool(VCONFKEY_TELEPHONY_FLIGHT_MODE, flight_mode->enable);
-
-	return TCORE_HOOK_RETURN_CONTINUE;
-}
-
 static enum tcore_hook_return on_hook_modem_power(Server *s, CoreObject *source, enum tcore_notification_command command, unsigned int data_len, void *data, void *user_data)
 {
 	const struct tnoti_modem_power *power = data;
@@ -914,7 +903,6 @@ static gboolean on_init(TcorePlugin *p)
 	tcore_server_add_notification_hook(s, TNOTI_PHONEBOOK_STATUS, on_hook_pb_init, strg);
 	tcore_server_add_notification_hook(s, TNOTI_PS_PROTOCOL_STATUS, on_hook_ps_protocol_status, strg);
 	tcore_server_add_notification_hook(s, TNOTI_MODEM_POWER, on_hook_modem_power, strg);
-	tcore_server_add_notification_hook(s, TNOTI_MODEM_FLIGHT_MODE, on_hook_modem_flight_mode, strg);
 
 	return TRUE;
 }
