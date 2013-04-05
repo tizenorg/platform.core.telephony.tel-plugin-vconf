@@ -125,6 +125,8 @@ static const gchar* convert_strgkey_to_vconf(enum tcore_storage_key key)
 			return VCONFKEY_TELEPHONY_FLIGHT_MODE;
 		case STORAGE_KEY_IDLE_SCREEN_LAUNCHED_BOOL:
 			return VCONFKEY_IDLE_SCREEN_LAUNCHED;
+		case STORAGE_KEY_CISSAPPL_SHOW_MY_NUMBER_INT:
+			return VCONFKEY_CISSAPPL_SHOW_MY_NUMBER_INT;
 		default:
 			break;
 	}
@@ -253,6 +255,9 @@ static enum tcore_storage_key convert_vconf_to_strgkey(const gchar* key)
 	}
 	else if (g_str_equal(key, VCONFKEY_IDLE_SCREEN_LAUNCHED) == TRUE) {
 		return STORAGE_KEY_IDLE_SCREEN_LAUNCHED_BOOL;
+	}
+	else if (g_str_equal(key, VCONFKEY_CISSAPPL_SHOW_MY_NUMBER_INT) == TRUE) {
+		return STORAGE_KEY_CISSAPPL_SHOW_MY_NUMBER_INT;
 	}
 	return 0;
 }
