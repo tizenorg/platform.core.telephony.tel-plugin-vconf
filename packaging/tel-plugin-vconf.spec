@@ -1,6 +1,6 @@
 %define major 0
 %define minor 1
-%define patchlevel 31
+%define patchlevel 32
 Name:       tel-plugin-vconf
 Summary:    Telephony Vconf storage plugin
 Version:    %{major}.%{minor}.%{patchlevel}
@@ -41,6 +41,7 @@ vconftool set -t int db/dnet/statistics/cellular/lastrcv 0 -i -f
 
 ##setting vconf key##
 vconftool set -t int memory/dnet/state 0 -i
+vconftool set -t int memory/dnet/packet_state 0 -i
 vconftool set -t int memory/dnet/cellular 4 -i
 vconftool set -t int memory/telephony/svc_type 0 -i -f
 vconftool set -t int memory/telephony/ps_type 0 -i -f

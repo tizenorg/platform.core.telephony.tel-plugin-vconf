@@ -81,6 +81,8 @@ static const gchar* convert_strgkey_to_vconf(enum tcore_storage_key key)
 			return VCONFKEY_PM_STATE;
 		case STORAGE_KEY_PACKET_SERVICE_STATE:
 			return VCONFKEY_DNET_STATE;
+		case STORAGE_KEY_PACKET_INDICATOR_STATE:
+			return VCONFKEY_PACKET_STATE;
 		case STORAGE_KEY_MESSAGE_NETWORK_MODE:
 			return VCONFKEY_MESSAGE_NETWORK_MODE;
 		case STORAGE_KEY_3G_ENABLE:
@@ -201,6 +203,9 @@ static enum tcore_storage_key convert_vconf_to_strgkey(const gchar* key)
 	}
 	else if (g_str_equal(key, VCONFKEY_DNET_STATE) == TRUE) {
 		return STORAGE_KEY_PACKET_SERVICE_STATE;
+	}
+	else if (g_str_equal(key, VCONFKEY_PACKET_STATE) == TRUE) {
+		return STORAGE_KEY_PACKET_INDICATOR_STATE;
 	}
 	else if (g_str_equal(key, VCONFKEY_TELEPHONY_NWNAME) == TRUE) {
 		return STORAGE_KEY_TELEPHONY_NWNAME;
