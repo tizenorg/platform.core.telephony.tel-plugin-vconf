@@ -8,6 +8,7 @@ Release:    1
 Group:      System/Libraries
 License:    Apache
 Source0:    tel-plugin-vconf-%{version}.tar.gz
+Source1001: 	tel-plugin-vconf.manifest
 Requires(post): /sbin/ldconfig
 Requires(postun): /sbin/ldconfig
 BuildRequires:  cmake
@@ -22,6 +23,7 @@ Telephony Vconf storage plugin
 
 %prep
 %setup -q
+cp %{SOURCE1001} .
 
 %build
 versionint=$[%{major} * 1000000 + %{minor} * 1000 + %{patchlevel}]
@@ -89,7 +91,7 @@ vconftool set -t bool db/telephony/flight_mode 0 -i -f
 mkdir -p %{buildroot}/usr/share/license
 
 %files
-%manifest tel-plugin-vconf.manifest
+%manifest %{name}.manifest
 %defattr(-,root,root,-)
 %{_libdir}/telephony/plugins/vconf-plugin*
 /usr/share/license/tel-plugin-vconf
