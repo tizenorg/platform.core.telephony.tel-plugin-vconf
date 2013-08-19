@@ -59,12 +59,6 @@ static const gchar* convert_strgkey_to_vconf(enum tcore_storage_key key)
 			return VCONFKEY_TELEPHONY_SVC_PS;
 		case STORAGE_KEY_TELEPHONY_SVC_ROAM:
 			return VCONFKEY_TELEPHONY_SVC_ROAM;
-		case STORAGE_KEY_TELEPHONY_ZONE_TYPE:
-			return VCONFKEY_TELEPHONY_ZONE_TYPE;
-		case STORAGE_KEY_TELEPHONY_SIM_INIT:
-			return VCONFKEY_TELEPHONY_SIM_INIT;
-		case STORAGE_KEY_TELEPHONY_SIM_CHV:
-			return VCONFKEY_TELEPHONY_SIM_CHV;
 		case STORAGE_KEY_TELEPHONY_SIM_PB_INIT:
 			return VCONFKEY_TELEPHONY_SIM_PB_INIT;
 		case STORAGE_KEY_TELEPHONY_CALL_STATE:
@@ -75,16 +69,10 @@ static const gchar* convert_strgkey_to_vconf(enum tcore_storage_key key)
 			return VCONFKEY_TELEPHONY_TAPI_STATE;
 		case STORAGE_KEY_TELEPHONY_SPN_DISP_CONDITION:
 			return VCONFKEY_TELEPHONY_SPN_DISP_CONDITION;
-		case STORAGE_KEY_TELEPHONY_SAT_STATE:
-			return VCONFKEY_TELEPHONY_SAT_STATE;
 		case STORAGE_KEY_TELEPHONY_ZONE_ZUHAUSE:
 			return VCONFKEY_TELEPHONY_ZONE_ZUHAUSE;
 		case STORAGE_KEY_TELEPHONY_RSSI:
 			return VCONFKEY_TELEPHONY_RSSI;
-		case STORAGE_KEY_TELEPHONY_LOW_BATTERY:
-			return VCONFKEY_TELEPHONY_LOW_BATTERY;
-		case STORAGE_KEY_TELEPHONY_EVENT_SYSTEM_READY:
-			return "memory/telephony/event_system_ready";
 		case STORAGE_KEY_TELEPHONY_READY:
 			return VCONFKEY_TELEPHONY_READY;
 		case STORAGE_KEY_TELEPHONY_SIM_SLOT:
@@ -93,6 +81,8 @@ static const gchar* convert_strgkey_to_vconf(enum tcore_storage_key key)
 			return VCONFKEY_PM_STATE;
 		case STORAGE_KEY_PACKET_SERVICE_STATE:
 			return VCONFKEY_DNET_STATE;
+		case STORAGE_KEY_PACKET_INDICATOR_STATE:
+			return VCONFKEY_PACKET_STATE;
 		case STORAGE_KEY_MESSAGE_NETWORK_MODE:
 			return VCONFKEY_MESSAGE_NETWORK_MODE;
 		case STORAGE_KEY_3G_ENABLE:
@@ -105,26 +95,18 @@ static const gchar* convert_strgkey_to_vconf(enum tcore_storage_key key)
 			return VCONFKEY_TELEPHONY_NWNAME;
 		case STORAGE_KEY_TELEPHONY_SPN_NAME:
 			return VCONFKEY_TELEPHONY_SPN_NAME;
-		case STORAGE_KEY_TELEPHONY_SAT_SETUP_IDLE_TEXT:
-			return VCONFKEY_TELEPHONY_SAT_SETUP_IDLE_TEXT;
 		case STORAGE_KEY_TELEPHONY_IMEI:
 			return VCONFKEY_TELEPHONY_IMEI;
 		case STORAGE_KEY_TELEPHONY_SUBSCRIBER_NUMBER:
 			return VCONFKEY_TELEPHONY_SUBSCRIBER_NUMBER;
-		case STORAGE_KEY_TELEPHONY_SUBSCRIBER_NAME:
-			return VCONFKEY_TELEPHONY_SUBSCRIBER_NAME;
 		case STORAGE_KEY_TELEPHONY_SWVERSION:
 			return VCONFKEY_TELEPHONY_SWVERSION;
 		case STORAGE_KEY_TELEPHONY_HWVERSION:
 			return VCONFKEY_TELEPHONY_HWVERSION;
-		case STORAGE_KEY_TELEPHONY_CALDATE:
-			return VCONFKEY_TELEPHONY_CALDATE;
 		case STORAGE_KEY_TELEPHONY_IMEI_FACTORY_REBOOT:
 			return VCONFKEY_TELEPHONY_IMEI_FACTORY_REBOOT;
 		case STORAGE_KEY_TELEPHONY_SIM_FACTORY_MODE:
 			return VCONFKEY_TELEPHONY_SIM_FACTORY_MODE;
-		case STORAGE_KEY_TELEPHONY_PRODUCTCODE:
-			return VCONFKEY_TELEPHONY_PRODUCTCODE;
 		case STORAGE_KEY_TELEPHONY_FACTORY_KSTRINGB:
 			return VCONFKEY_TELEPHONY_FACTORY_KSTRINGB;
 		case STORAGE_KEY_TELEPHONY_IMSI:
@@ -145,6 +127,8 @@ static const gchar* convert_strgkey_to_vconf(enum tcore_storage_key key)
 			return VCONFKEY_TELEPHONY_FLIGHT_MODE;
 		case STORAGE_KEY_IDLE_SCREEN_LAUNCHED_BOOL:
 			return VCONFKEY_IDLE_SCREEN_LAUNCHED;
+		case STORAGE_KEY_CISSAPPL_SHOW_MY_NUMBER_INT:
+			return VCONFKEY_CISSAPPL_SHOW_MY_NUMBER_INT;
 		default:
 			break;
 	}
@@ -175,15 +159,6 @@ static enum tcore_storage_key convert_vconf_to_strgkey(const gchar* key)
 	else if (g_str_equal(key, VCONFKEY_TELEPHONY_SVC_ROAM) == TRUE) {
 		return STORAGE_KEY_TELEPHONY_SVC_ROAM;
 	}
-	else if (g_str_equal(key, VCONFKEY_TELEPHONY_ZONE_TYPE) == TRUE) {
-		return STORAGE_KEY_TELEPHONY_ZONE_TYPE;
-	}
-	else if (g_str_equal(key, VCONFKEY_TELEPHONY_SIM_INIT) == TRUE) {
-		return STORAGE_KEY_TELEPHONY_SIM_INIT;
-	}
-	else if (g_str_equal(key, VCONFKEY_TELEPHONY_SIM_CHV) == TRUE) {
-		return STORAGE_KEY_TELEPHONY_SIM_CHV;
-	}
 	else if (g_str_equal(key, VCONFKEY_TELEPHONY_SIM_PB_INIT) == TRUE) {
 		return STORAGE_KEY_TELEPHONY_SIM_PB_INIT;
 	}
@@ -199,20 +174,11 @@ static enum tcore_storage_key convert_vconf_to_strgkey(const gchar* key)
 	else if (g_str_equal(key, VCONFKEY_TELEPHONY_SPN_DISP_CONDITION) == TRUE) {
 		return STORAGE_KEY_TELEPHONY_SPN_DISP_CONDITION;
 	}
-	else if (g_str_equal(key, VCONFKEY_TELEPHONY_SAT_STATE) == TRUE) {
-		return STORAGE_KEY_TELEPHONY_SAT_STATE;
-	}
 	else if (g_str_equal(key, VCONFKEY_TELEPHONY_ZONE_ZUHAUSE) == TRUE) {
 		return STORAGE_KEY_TELEPHONY_ZONE_ZUHAUSE;
 	}
 	else if (g_str_equal(key, VCONFKEY_TELEPHONY_RSSI) == TRUE) {
 		return STORAGE_KEY_TELEPHONY_RSSI;
-	}
-	else if (g_str_equal(key, VCONFKEY_TELEPHONY_LOW_BATTERY) == TRUE) {
-		return STORAGE_KEY_TELEPHONY_LOW_BATTERY;
-	}
-	else if (g_str_equal(key, "memory/telephony/event_system_ready") == TRUE) {
-		return STORAGE_KEY_TELEPHONY_EVENT_SYSTEM_READY;
 	}
 	else if (g_str_equal(key, VCONFKEY_TELEPHONY_READY) == TRUE) {
 		return STORAGE_KEY_TELEPHONY_READY;
@@ -238,14 +204,14 @@ static enum tcore_storage_key convert_vconf_to_strgkey(const gchar* key)
 	else if (g_str_equal(key, VCONFKEY_DNET_STATE) == TRUE) {
 		return STORAGE_KEY_PACKET_SERVICE_STATE;
 	}
+	else if (g_str_equal(key, VCONFKEY_PACKET_STATE) == TRUE) {
+		return STORAGE_KEY_PACKET_INDICATOR_STATE;
+	}
 	else if (g_str_equal(key, VCONFKEY_TELEPHONY_NWNAME) == TRUE) {
 		return STORAGE_KEY_TELEPHONY_NWNAME;
 	}
 	else if (g_str_equal(key, VCONFKEY_TELEPHONY_SPN_NAME) == TRUE) {
 		return STORAGE_KEY_TELEPHONY_SPN_NAME;
-	}
-	else if (g_str_equal(key, VCONFKEY_TELEPHONY_SAT_SETUP_IDLE_TEXT) == TRUE) {
-		return STORAGE_KEY_TELEPHONY_SAT_SETUP_IDLE_TEXT;
 	}
 	else if (g_str_equal(key, VCONFKEY_TELEPHONY_IMEI) == TRUE) {
 		return STORAGE_KEY_TELEPHONY_IMEI;
@@ -253,26 +219,17 @@ static enum tcore_storage_key convert_vconf_to_strgkey(const gchar* key)
 	else if (g_str_equal(key, VCONFKEY_TELEPHONY_SUBSCRIBER_NUMBER) == TRUE) {
 		return STORAGE_KEY_TELEPHONY_SUBSCRIBER_NUMBER;
 	}
-	else if (g_str_equal(key, VCONFKEY_TELEPHONY_SUBSCRIBER_NAME) == TRUE) {
-		return STORAGE_KEY_TELEPHONY_SUBSCRIBER_NAME;
-	}
 	else if (g_str_equal(key, VCONFKEY_TELEPHONY_SWVERSION) == TRUE) {
 		return STORAGE_KEY_TELEPHONY_SWVERSION;
 	}
 	else if (g_str_equal(key, VCONFKEY_TELEPHONY_HWVERSION) == TRUE) {
 		return STORAGE_KEY_TELEPHONY_HWVERSION;
 	}
-	else if (g_str_equal(key, VCONFKEY_TELEPHONY_CALDATE) == TRUE) {
-		return STORAGE_KEY_TELEPHONY_CALDATE;
-	}
 	else if (g_str_equal(key, VCONFKEY_TELEPHONY_IMEI_FACTORY_REBOOT) == TRUE) {
 		return STORAGE_KEY_TELEPHONY_IMEI_FACTORY_REBOOT;
 	}
 	else if (g_str_equal(key, VCONFKEY_TELEPHONY_SIM_FACTORY_MODE) == TRUE) {
 		return STORAGE_KEY_TELEPHONY_SIM_FACTORY_MODE;
-	}
-	else if (g_str_equal(key, VCONFKEY_TELEPHONY_PRODUCTCODE) == TRUE) {
-		return STORAGE_KEY_TELEPHONY_PRODUCTCODE;
 	}
 	else if (g_str_equal(key, VCONFKEY_TELEPHONY_FACTORY_KSTRINGB) == TRUE) {
 		return STORAGE_KEY_TELEPHONY_FACTORY_KSTRINGB;
@@ -303,6 +260,9 @@ static enum tcore_storage_key convert_vconf_to_strgkey(const gchar* key)
 	}
 	else if (g_str_equal(key, VCONFKEY_IDLE_SCREEN_LAUNCHED) == TRUE) {
 		return STORAGE_KEY_IDLE_SCREEN_LAUNCHED_BOOL;
+	}
+	else if (g_str_equal(key, VCONFKEY_CISSAPPL_SHOW_MY_NUMBER_INT) == TRUE) {
+		return STORAGE_KEY_CISSAPPL_SHOW_MY_NUMBER_INT;
 	}
 	return 0;
 }
@@ -728,8 +688,6 @@ static enum tcore_hook_return on_hook_sim_init(Server *s, CoreObject *source, en
 
 	dbg("vconf set (sim_status = %d)", sim->sim_status);
 
-	vconf_set_int(VCONFKEY_TELEPHONY_SIM_CHV, sim->sim_status);
-
 	switch (sim->sim_status) {
 		case SIM_STATUS_CARD_ERROR:
 			vconf_set_int(VCONFKEY_TELEPHONY_SIM_SLOT, VCONFKEY_TELEPHONY_SIM_CARD_ERROR);
@@ -744,7 +702,6 @@ static enum tcore_hook_return on_hook_sim_init(Server *s, CoreObject *source, en
 
 		case SIM_STATUS_INIT_COMPLETED:
 			vconf_set_int(VCONFKEY_TELEPHONY_SIM_SLOT, VCONFKEY_TELEPHONY_SIM_INSERTED);
-			vconf_set_int(VCONFKEY_TELEPHONY_SIM_INIT, VCONFKEY_TELEPHONY_SIM_INIT_COMPLETED);
 			break;
 
 		case SIM_STATUS_INITIALIZING:
@@ -846,23 +803,16 @@ static void reset_vconf()
 	vconf_set_int(VCONFKEY_TELEPHONY_SVC_CS, VCONFKEY_TELEPHONY_SVC_CS_UNKNOWN);
 	vconf_set_int(VCONFKEY_TELEPHONY_SVC_PS, VCONFKEY_TELEPHONY_SVC_PS_UNKNOWN);
 	vconf_set_int(VCONFKEY_TELEPHONY_SVC_ROAM, VCONFKEY_TELEPHONY_SVC_ROAM_OFF);
-	vconf_set_int(VCONFKEY_TELEPHONY_ZONE_TYPE, VCONFKEY_TELEPHONY_ZONE_NONE);
-	vconf_set_int(VCONFKEY_TELEPHONY_SIM_INIT, VCONFKEY_TELEPHONY_SIM_INIT_NONE);
-	vconf_set_int(VCONFKEY_TELEPHONY_SIM_CHV, 0xFF);
 	vconf_set_int(VCONFKEY_TELEPHONY_SIM_SLOT, VCONFKEY_TELEPHONY_SIM_UNKNOWN);
 	vconf_set_int(VCONFKEY_TELEPHONY_SIM_PB_INIT, VCONFKEY_TELEPHONY_SIM_PB_INIT_NONE);
 	vconf_set_int(VCONFKEY_TELEPHONY_CALL_STATE, VCONFKEY_TELEPHONY_CALL_CONNECT_IDLE);
 	vconf_set_int(VCONFKEY_TELEPHONY_TAPI_STATE, VCONFKEY_TELEPHONY_TAPI_STATE_NONE);
 	vconf_set_int(VCONFKEY_TELEPHONY_SPN_DISP_CONDITION, VCONFKEY_TELEPHONY_DISP_INVALID);
 	vconf_set_str(VCONFKEY_TELEPHONY_SPN_NAME, "");
-	vconf_set_int(VCONFKEY_TELEPHONY_SAT_STATE, VCONFKEY_TELEPHONY_SAT_NONE);
-	vconf_set_str(VCONFKEY_TELEPHONY_SAT_SETUP_IDLE_TEXT, "");
 	vconf_set_int(VCONFKEY_TELEPHONY_ZONE_ZUHAUSE, 0);
 	vconf_set_int(VCONFKEY_TELEPHONY_RSSI, VCONFKEY_TELEPHONY_RSSI_0);
-	vconf_set_int(VCONFKEY_TELEPHONY_LOW_BATTERY, VCONFKEY_TELEPHONY_BATT_NORMAL_LEVEL);
 	vconf_set_str(VCONFKEY_TELEPHONY_IMEI, "deprecated_vconf_imei");
 	vconf_set_str(VCONFKEY_TELEPHONY_SUBSCRIBER_NUMBER, "");
-	vconf_set_str(VCONFKEY_TELEPHONY_SUBSCRIBER_NAME, "");
 	vconf_set_int(VCONFKEY_TELEPHONY_SIM_PB_INIT, VCONFKEY_TELEPHONY_SIM_PB_INIT_NONE);
 	vconf_set_bool(VCONFKEY_TELEPHONY_READY, 0);
 	vconf_set_int(VCONFKEY_TELEPHONY_NITZ_GMT, 0);
@@ -891,7 +841,6 @@ static gboolean on_init(TcorePlugin *p)
 
 	reset_vconf();
 
-	vconf_set_int(VCONFKEY_TELEPHONY_LOW_BATTERY, VCONFKEY_TELEPHONY_BATT_NORMAL_LEVEL);
 	vconf_set_int(VCONFKEY_TELEPHONY_SVC_ROAM, VCONFKEY_TELEPHONY_SVC_ROAM_OFF);
 
 	s = tcore_plugin_ref_server(p);
