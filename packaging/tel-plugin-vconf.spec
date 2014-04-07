@@ -1,6 +1,7 @@
-%define major 0
-%define minor 1
-%define patchlevel 32
+%define major 3
+%define minor 0
+%define patchlevel 1
+
 Name:       tel-plugin-vconf
 Summary:    Telephony Vconf storage plugin
 Version:    %{major}.%{minor}.%{patchlevel}
@@ -58,14 +59,8 @@ vconftool set -t int memory/telephony/call_state 0 -i -f
 vconftool set -t int db/telephony/call_forward_state 0 -i -f
 vconftool set -t int memory/telephony/tapi_state 0 -i -f
 vconftool set -t int memory/telephony/spn_disp_condition 0 -i -f
-vconftool set -t int memory/telephony/zuhause_zone 0 -i -f
 vconftool set -t string memory/telephony/spn "" -i -f
 vconftool set -t string memory/telephony/nw_name "" -i -f
-vconftool set -t string memory/telephony/imei "" -i -f
-vconftool set -t string memory/telephony/szSubscriberNumber "" -i -f
-vconftool set -t string memory/telephony/szSWVersion "" -i -f
-vconftool set -t string memory/telephony/szHWVersion "" -i -f
-vconftool set -t string db/private/tel-plugin-vconf/imsi "" -f
 vconftool set -t int db/telephony/emergency 0 -i -f
 vconftool set -t bool memory/telephony/telephony_ready 0 -i -f
 vconftool set -t int memory/telephony/nitz_gmt 0 -i -f
