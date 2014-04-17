@@ -11,7 +11,7 @@ SET(CMAKE_INSTALL_PREFIX "${PREFIX}")
 
 # Set required packages
 INCLUDE(FindPkgConfig)
-pkg_check_modules(pkgs REQUIRED vconf glib-2.0 gthread-2.0 tcore dlog)
+pkg_check_modules(pkgs REQUIRED vconf glib-2.0 gthread-2.0 tcore)
 
 FOREACH(flag ${pkgs_CFLAGS})
 	SET(EXTRA_CFLAGS "${EXTRA_CFLAGS} ${flag}")
@@ -22,8 +22,8 @@ INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include/)
 
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${EXTRA_CFLAGS} -Wextra -Wno-unused-parameter -Wno-missing-field-initializers -Wdeclaration-after-statement -Wmissing-declarations -Wredundant-decls -Wcast-align")
 
-ADD_DEFINITIONS("-DFEATURE_DLOG_DEBUG")
-ADD_DEFINITIONS("-DTCORE_LOG_TAG=\"TEL_PLUGIN_VCONF\"")
+ADD_DEFINITIONS("-DFEATURE_TLOG_DEBUG")
+ADD_DEFINITIONS("-DTCORE_LOG_TAG=\"VCONF\"")
 ADD_DEFINITIONS("-DPLUGIN_VERSION=${VERSION}")
 
 MESSAGE(${CMAKE_C_FLAGS})
