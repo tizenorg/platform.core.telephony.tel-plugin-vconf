@@ -834,13 +834,12 @@ static gboolean on_load()
 static gboolean on_init(TcorePlugin *plugin)
 {
 	Server *server;
-	TcoreStorage *strg;
 	GSList *list;
 	tcore_check_return_value_assert(plugin != NULL, FALSE);
 
 	dbg("i'm init!");
 
-	strg = tcore_storage_new(plugin, "vconf", &ops);
+	tcore_storage_new(plugin, "vconf", &ops);
 
 	reset_vconf();
 
@@ -878,7 +877,7 @@ static void on_unload(TcorePlugin *plugin)
 	tcore_server_remove_notification_hook(server, on_hook_modem_plugin_added);
 	tcore_server_remove_notification_hook(server, on_hook_modem_plugin_removed);
 
-	strg = tcore_server_find_storage(tcore_plugin_ref_server(plugin), "vconf");
+	strg = tcore_server_find_storage(server, "vconf");
 	tcore_storage_free(strg);
 }
 
