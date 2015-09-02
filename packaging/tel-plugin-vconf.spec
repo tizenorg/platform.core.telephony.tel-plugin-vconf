@@ -1,6 +1,6 @@
 %define major 0
 %define minor 2
-%define patchlevel 3
+%define patchlevel 4
 
 Name:           tel-plugin-vconf
 Version:        %{major}.%{minor}.%{patchlevel}
@@ -8,7 +8,7 @@ Release:        1
 License:        Apache-2.0
 Summary:        Telephony Vconf storage plugin
 Group:          System/Libraries
-Source0:        tel-plugin-vconf-%{version}.tar.gz
+Source0:        %{name}-%{version}.tar.gz
 BuildRequires:  cmake
 #BuildRequires:	model-build-features
 BuildRequires:  pkgconfig(glib-2.0)

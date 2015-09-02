@@ -44,8 +44,15 @@ ENDIF(PREPAID_SIM_APN_SUPPORT)
 MESSAGE(${CMAKE_C_FLAGS})
 MESSAGE(${pkgs_LDFLAGS})
 
+INCLUDE_DIRECTORIES(
+	${CMAKE_SOURCE_DIR}/include
+)
+
 SET(SRCS
-		src/desc-vconf.c
+	src/desc-vconf.c
+	src/vconf_main.c
+	src/vconf_core.c
+	src/vconf_handler.c
 )
 
 

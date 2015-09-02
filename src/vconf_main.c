@@ -24,52 +24,64 @@
 #include <glib.h>
 
 #include <tcore.h>
-#include <plugin.h>
 
 #include "vconf_main.h"
+#include "vconf_core.h"
+#include "vconf_handler.h"
 
-#ifndef PLUGIN_VERSION
-#define PLUGIN_VERSION 1
-#endif
-
-static gboolean on_load()
-{
-	dbg("i'm load!");
-
-	return TRUE;
-}
-
-static gboolean on_init(TcorePlugin *p)
+/*
+ * VCONF Initialization function
+ */
+gboolean vconf_main_init(TcorePlugin *p)
 {
 	gboolean ret;
 
 	if (!p)
 		return FALSE;
 
-	dbg("i'm init!");
+	dbg("Enter");
 
-	ret = vconf_main_init(p);
-	dbg("on_init: [%s]", ret ? "Success" : "Fail");
+	/*
+	 * Initialize VCONF 'Core'
+	 */
+	ret = vconf_core_init(p);
+	if (ret == FALSE) {
+		err("VCONF Core init failed!");
+		return FALSE;
+	}
 
-	return ret;
+	/*
+	 * Initialize VCONF 'Handler'
+	 */
+	ret = vconf_handler_init(p);
+	if (ret == FALSE) {
+		err("VCONF Handler init failed!");
+
+		vconf_core_deinit(p);
+		return FALSE;
+	}
+
+
+	return TRUE;
 }
 
-static void on_unload(TcorePlugin *p)
+/*
+ * VCONF De-initialization function
+ */
+void vconf_main_deinit(TcorePlugin *p)
 {
 	if (!p)
 		return;
 
-	dbg("i'm unload");
+	dbg("Enter");
 
-	vconf_main_deinit(p);
+	/*
+	 * De-initialize VCONF 'Handler'
+	 */
+	vconf_handler_deinit(p);
+
+	/*
+	 * De-initialize VCONF 'Core'
+	 */
+	vconf_core_deinit(p);
 }
-
-/* Plug-in descriptor */
-EXPORT_API struct tcore_plugin_define_desc plugin_define_desc = {
-	.name = "VCONF_STORAGE",
-	.priority = TCORE_PLUGIN_PRIORITY_HIGH - 1,
-	.version = PLUGIN_VERSION,
-	.load = on_load,
-	.init = on_init,
-	.unload = on_unload
-};
