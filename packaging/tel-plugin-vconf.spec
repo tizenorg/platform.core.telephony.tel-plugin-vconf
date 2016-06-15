@@ -1,6 +1,6 @@
 %define major 0
 %define minor 2
-%define patchlevel 5
+%define patchlevel 6
 
 Name:           tel-plugin-vconf
 Version:        %{major}.%{minor}.%{patchlevel}

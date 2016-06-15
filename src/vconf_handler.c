@@ -83,7 +83,7 @@ static void __vconf_check_and_set_str(const char *in_key, const char *strval)
 
 static void __vconf_write_power_status_log(VconfPrivData *ud, enum modem_state state)
 {
-	struct sysinfo sys_info;
+	struct sysinfo sys_info = {0,};
 
 	if (ud == NULL)
 		return;
